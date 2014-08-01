@@ -16,7 +16,9 @@ End Code
     <div class="form-group">
         @Html.LabelFor(Function(m) m.Email, New With {.class = "col-md-2 control-label"})
         <div class="col-md-10">
-            @Html.TextBoxFor(Function(m) m.Email, New With {.class = "form-control"})
+                @Html.TextBoxFor(Function(m) m.Email, New With {.class = "form-control", .style = "display:inline-block"})
+                <span id="emailValid" class="glyphicon glyphicon-ok" style="font-size:1.5em;color:green;display:none;"></span>
+                <span id="emailAlreadyTaken" class="glyphicon glyphicon-remove" style="font-size:1.5em;color:red;display:none;"></span>
         </div>
     </div>
     <div class="form-group">
@@ -41,4 +43,36 @@ End Using
 
 @section Scripts
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            $("#Email").keyup(function () {
+                var proposedEmail = $(this).val();
+
+                if (proposedEmail.length <= 0) {
+                    $("#emailValid").hide();
+                    $("#emailAlreadyTaken").hide();
+                }
+                else {
+                    $.post('/Account/CheckIfEMailAlreadyExist',
+                            { "proposedEmail": proposedEmail },
+                            function (data) {
+                                var isAlreadyExist = data;
+                                if (isAlreadyExist) {
+                                    $("#emailValid").hide();
+                                    $("#emailAlreadyTaken").show();
+                                }
+                                else {
+                                    $("#emailAlreadyTaken").hide();
+                                    $("#emailValid").show();
+                                }
+                            });
+                }
+            });
+
+        });
+
+    </script>
 End Section

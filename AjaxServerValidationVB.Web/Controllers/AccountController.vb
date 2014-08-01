@@ -64,6 +64,16 @@ Public Class AccountController
         Return View()
     End Function
 
+    Private _emailList As New List(Of String) From {"me@me.com", "you@outlook.com", "him@gmail.com"}
+
+    <HttpPost>
+    <AllowAnonymous>
+    Public Function CheckIfEMailAlreadyExist(proposedEMail As String) As ActionResult
+        Dim emailAlreadyExist = _emailList.Contains(proposedEMail)
+
+        Return Json(emailAlreadyExist)
+    End Function
+
     '
     ' POST: /Account/Register
     <HttpPost>
